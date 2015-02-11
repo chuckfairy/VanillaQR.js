@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>VanillaQR</title>
+    <script src="VanillaQR.min.js"></script>
+</head>
+
+<body>
+
+    <script>
+
+    var qr = new VanillaQR({
+        url: "https://github.com/chuckfairy/VanillQR",
+        width: 400,
+        height: 400,
+
+        colorLight: "#FAA7F9",
+        colorDark: "#3A005E",
+
+        onError: function() {alert("Sorry no canvas support");}
+    });
+
+    document.body.appendChild(qr.domElement);
+
+    //re initialize to new url
+    qr.url = "https://github.com/chuckfairy";
+    qr.init();
+
+    var imageElement = qr.toImage("png");
+    document.body.appendChild(imageElement);
+
+    </script>
+
+</body>
