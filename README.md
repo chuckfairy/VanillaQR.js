@@ -12,7 +12,7 @@ A small javascript file for creating qr codes on the fly using the HTML5 Canvas 
 //Width, height, and colors are the defaults
 var qr = new VanillaQR({
 
-    url: "https://github.com/chuckfairy/VanillQR",
+    url: "https://github.com/chuckfairy/VanillQR.js",
     width: 280,
     height: 280,
 
