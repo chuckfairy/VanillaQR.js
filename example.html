@@ -21,15 +21,16 @@
         onError: function() {alert("Sorry no canvas support");}
     });
 
-    document.body.appendChild(qr.domElement);
+    var imageElement = qr.toImage("png");
+    document.body.appendChild(imageElement);
 
     //re initialize to new url
     qr.url = "https://github.com/chuckfairy";
     qr.init();
 
-    var imageElement = qr.toImage("png");
-    document.body.appendChild(imageElement);
+    document.body.appendChild(qr.domElement);
 
     </script>
 
 </body>
+</html>

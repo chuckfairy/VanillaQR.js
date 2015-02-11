@@ -1,4 +1,4 @@
-# VanillaQR javascript QR code creator
+# VanillaQR javascript QR code generator
 
 A small javascript file for creating qr codes on the fly using the HTML5 Canvas element. Only 30kb and 10kb compressed.
 

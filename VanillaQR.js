@@ -1,6 +1,6 @@
 //VanillaQR Function constructor
-//Takes element, url for qr, and customize
-//Object customize takes width, height, png(to turn canvas into image)
+//pass an object with customizable options
+//url, colorLight, colorDark, width, height
 function VanillaQR ( customize ) {
 
     //Scope
