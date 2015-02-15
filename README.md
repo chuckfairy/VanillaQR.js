@@ -49,3 +49,8 @@ All browsers with canvas and canvas 2d context support
 * Android > 4.0
 
 Vanilla QR is based on a port of a java qr code library that I can no longer find. When I do find it I'll be sure to give it proper credit. Thank you and have a nice day!
+
+## Live Demos
+
+* Demo > http://chuckfairy.com/VanillaQR.js/example.html
+* Creator > http://chuckfairy.com/VanillaQR.js/
