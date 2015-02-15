@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>VanillaQR.js Creator</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+
+
+    <script src="VanillaQR.min.js"></script>
+
+    <style>
+
+    html {font-size: 16px;}
+
+    body {
+        width: 90%;
+        max-width: 40em;
+        margin: 0 auto;
+    }
+
+    textarea, button, canvas, p {
+        display: block;
+        width: 80%;
+        margin: 20px auto;
+        font-size: 1.4em;
+    }
+
+    </style>
+</head>
+
+<body>
+
+    <h1><a href="https://github.com/chuckfairy/VanillaQR.js">VanillaQR.js</a></h1>
+
+    <p>JavaScript and HTML5 QR Generator</p>
+
+    <textarea id="qrUrl">https://github.com/chuckfairy/VanillaQR.js</textarea>
+
+    <p>Color Light <input type="text" value="FAA7F9" id="colorLight"></p>
+    <p>Color Dark <input type="text" value="3A005E" id="colorDark"></p>
+
+    <button onclick="createQR();">Create QR</button>
+
+    <script>
+
+    var qr = new VanillaQR({
+        url: "https://github.com/chuckfairy/VanillaQR.js",
+        width: 400,
+        height: 400,
+
+        colorLight: "#FAA7F9",
+        colorDark: "#3A005E",
+
+        onError: function() {alert("Sorry no canvas support");}
+    });
+
+    document.body.appendChild(qr.domElement);
+
+    //Create qr controllers
+    var qrUrl = document.getElementById("qrUrl");
+    var colorLight = document.getElementById("colorLight");
+    var colorDark = document.getElementById("colorDark");
+
+    function createQR() {
+
+        qr.url = qrUrl.value;
+        qr.colorLight = "#" + colorLight.value;
+        qr.colorDark = "#" + colorDark.value;
+
+        qr.init();
+
+    }
+
+    </script>
+
+</body>
+</html>
