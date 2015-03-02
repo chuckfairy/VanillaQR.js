@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>VanillaQR.js Creator</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="stylesheet" href="lib/creator.css">
+    <script src="../VanillaQR.min.js"></script>
+    <script src="lib/jscolor/jscolor.js"></script>
+
+</head>
+
+<body>
+
+    <h1><a href="https://github.com/chuckfairy/VanillaQR.js">VanillaQR.js</a></h1>
+
+    <p>JavaScript and HTML5 QR Generator</p>
+
+    <textarea id="qrUrl">https://github.com/chuckfairy/VanillaQR.js</textarea>
+
+    <p>Color Light <input type="text" class="color" value="FAA7F9" id="colorLight"></p>
+    <p>Color Dark <input type="text" class="color" value="3A005E" id="colorDark"></p>
+
+    <p>Ecclevel
+        <select id="ecclevel">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+        </select>
+    </p>
+
+
+    <button onclick="createQR();">Create QR</button>
+
+    <p><a onclick="exportImage()">Export Image</a><select id="imageTypeSelector"></select></p>
+
+    <script>
+
+    window.onload = function() {
+        setupImageTypes();
+    }
+
+    var qr = new VanillaQR({
+        url: "https://github.com/chuckfairy/VanillaQR.js",
+        size: 400,
+
+        colorLight: "#FAA7F9",
+        colorDark: "#3A005E"
+
+    });
+
+    document.body.appendChild(qr.domElement);
+
+    //Create qr controllers
+    var qrUrl = document.getElementById("qrUrl");
+    var colorLight = document.getElementById("colorLight");
+    var colorDark = document.getElementById("colorDark");
+    var ecclevel = document.getElementById("ecclevel");
+    var imageTypeSelector = document.getElementById("imageTypeSelector");
+
+    function createQR() {
+
+        qr.url = qrUrl.value;
+        qr.colorLight = "#" + colorLight.value;
+        qr.colorDark = "#" + colorDark.value;
+        qr.ecclevel = ecclevel.value;
+
+        qr.init();
+
+    }
+
+    function setupImageTypes() {
+
+        var optionTag = document.createElement("option");
+        for( var type in qr.imageTypes) {
+
+            var typeOption = optionTag.cloneNode();
+
+            typeOption.value = type;
+            typeOption.innerHTML = type;
+
+            imageTypeSelector.appendChild(typeOption);
+        }
+
+    }
+
+    function exportImage() {
+
+        var imageType = imageTypeSelector.options[ imageTypeSelector.selectedIndex ].value;
+        var image = qr.toImage(imageType);
+
+        window.open(image.src);
+
+    }
+
+    </script>
+
+</body>
+</html>

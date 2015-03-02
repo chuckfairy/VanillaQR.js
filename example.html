@@ -3,7 +3,7 @@
 
 <head>
     <title>VanillaQR</title>
-    <script src="VanillaQR.min.js"></script>
+    <script src="VanillaQR.js"></script>
 </head>
 
 <body>
@@ -18,17 +18,37 @@
         colorLight: "#FAA7F9",
         colorDark: "#3A005E",
 
-        onError: function() {alert("Sorry no canvas support");}
+        toTable: true
+
     });
 
-    var imageElement = qr.toImage("png");
-    document.body.appendChild(imageElement);
+    var qr2 = new VanillaQR({
+        url: "https://github.com/chuckfairy/VanillQR.js",
+        width: 400,
+        height: 400,
 
-    //re initialize to new url
-    qr.url = "https://github.com/chuckfairy";
-    qr.init();
+        colorLight: "#FAA7F9",
+        colorDark: "#3A005E",
 
+    });
+
+    var createTitle = function(title) {
+        var h2 = document.createElement("h2");
+        h2.innerHTML = title;
+        return h2;
+    }
+
+    document.body.appendChild(createTitle("Table"));
     document.body.appendChild(qr.domElement);
+
+    document.body.appendChild(createTitle("Canvas"));
+    document.body.appendChild(qr2.domElement);
+
+    var imageElement = qr2.toImage("png");
+    if(imageElement) {
+        document.body.appendChild(createTitle("Canvas Image"));
+        document.body.appendChild(imageElement);
+    }
 
     </script>
 

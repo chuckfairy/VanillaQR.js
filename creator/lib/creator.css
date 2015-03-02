@@ -1,0 +1,41 @@
+html {font-size: 16px;}
+
+body {
+    width: 95%;
+    max-width: 40em;
+    margin: 0 auto;
+}
+
+textarea, button, canvas, p {
+    display: block;
+    width: 100%;
+    margin: 20px auto;
+}
+
+textarea {
+    font-size: 1em;
+}
+
+p, button {
+    font-size: 1.4em;
+}
+
+select, option {
+    font-size: 1.4em;
+}
+
+p > input {
+    font-size: .8em;
+    padding: 5px;
+}
+
+p > a, button {
+    cursor: pointer;
+    padding: 5px;
+    background: rgb(200,200,200);
+    border: 1px solid rgb(0,0,0);
+}
+
+p > a {
+    margin-right: 15px;
+}

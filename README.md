@@ -1,6 +1,6 @@
 # VanillaQR javascript QR code generator
 
-A small javascript file for creating qr codes on the fly using the HTML5 Canvas element. Only 30kb and 10kb compressed.
+A small javascript file for creating qr codes on the fly using the HTML5 Canvas element. Only 33kb and 11kb compressed. By default VanillaQR.js will output a canvas element as it's domElement. If the canvas element and 2d context is not supported, it will create a table instead. Tables will not be able to output images so be sure to check that the image element exists.
 
 ## How to use
 
@@ -9,30 +9,41 @@ A small javascript file for creating qr codes on the fly using the HTML5 Canvas 
 <script>
 
 //Create qr object
-//Width, height, and colors are the defaults
+//Minus the url, these are the defaults
 var qr = new VanillaQR({
 
     url: "https://github.com/chuckfairy/VanillQR.js",
-    width: 280,
-    height: 280,
+    size: 280,
 
     colorLight: "#ffffff",
     colorDark: "#0000000",
 
-    onError: function() {alert("Sorry no canvas support");}
+    //output to table or canvas
+    toTable: false,
+
+    //Ecc correction level 1-4
+    ecclevel: 1
 
 });
 
+//Canvas or table is stored in domElement property
 document.body.appendChild(qr.domElement);
 
 //Alternatively you can create an image from the canvas
 //png, jpg, jpeg, webp, gif, bmp, tiff, x-icon, svg+xml, xxx
+//Currently canvas dataURL mime types are not the same
 var imageElement = qr.toImage("png");
-document.body.appendChild(imageElement);
+
+if(imageElement) {
+    document.body.appendChild(imageElement);
+}
+
 
 //You can recreate the qr code to a new url like so
 //If you have appended the domElement it will change
 qr.url = "https://github.com/chuckfairy";
+qr.colorLight = "#0000000";
+qr.colorDark = "#ffffff";
 qr.init();
 
 </script>

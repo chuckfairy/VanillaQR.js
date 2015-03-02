@@ -3,12 +3,13 @@
 //url, colorLight, colorDark, width, height
 function VanillaQR ( customize ) {
 
-    //Scope
-    var SCOPE = this;
-    customize = customize || {};
+    customize = typeof(customize) === "object" ? customize : {};
 
     /********************PUBLICS********************/
 
+    this.revision = 2;
+
+    //canvas output types
     this.imageTypes = {
         "bmp"    : "image/bmp",
         "gif"    : "image/gif",
@@ -21,13 +22,29 @@ function VanillaQR ( customize ) {
         "x-icon" : "image/x-icon"
     };
 
-    this.domElement = document.createElement('canvas');
+    //toTable use will default if no canvas support
+    this.toTable = customize.toTable;
 
+    //qr active domElement
+    this.domElement = (this.toTable) ?
+        document.createElement("div"):
+        document.createElement("canvas");
+
+    //QR url
     this.url = customize.url || "";
 
-    this.colorLight = customize.colorLight || '#fff';
+    //Canvas and qr width and height
+    this.size  = (customize.size  || 280);
 
+    //QR context
+    this.qrc = false;
+
+    //QR colors
+    this.colorLight = customize.colorLight || '#fff';
     this.colorDark = customize.colorDark || "#000";
+
+    //Correction level
+    this.ecclevel = customize.ecclevel || 1;
 
     /********************PRIVATES********************/
 
@@ -41,20 +58,13 @@ function VanillaQR ( customize ) {
 	var genpoly  = [ ];
 
 	// Control values - width is based on version, last 4 are from table.
-	var ecclevel = customize.ecclevel || 1;
+	var ecclevel;
 	var version;
 	var width;
 	var neccblk1;
 	var neccblk2;
 	var datablkw;
 	var eccblkwid;
-
-	var wd = (customize.width  || 280);
-    var ht = (customize.height || 280);
-
-    //Get context and proceed if it is allowed
-    var qrc = SCOPE.getContext(this.domElement, customize.onError);
-    if(!qrc) {return;}
 
 
     /********************QR Creator API********************/
@@ -303,7 +313,7 @@ function VanillaQR ( customize ) {
             bw = -bw;
 
         var big = bw;
-        count = 0;
+        var count = 0;
         big += big << 2;
         big <<= 1;
         while (big > width * width)
@@ -664,35 +674,74 @@ function VanillaQR ( customize ) {
         return qrframe;
     };
 
+    //Initialize QR Code
     this.init = function() {
 
-        //Setup canvas context
-        qrc.canvas.width = wd;
-        qrc.canvas.height = ht;
-        qrc.fillStyle = '#eee';
-        qrc.fillRect(0, 0, wd, ht);
+        ecclevel = this.ecclevel;
+        var qf = this.genframe(this.url);
 
-        ecclevel = 1;
-        qf = this.genframe(this.url);
+        if(this.toTable) {
+
+            this.tableWrite(qf, width);
+
+        } else {
+
+            this.canvasWrite(qf, width);
+
+        }
+
+    };
+
+    //Auto initialize
+    this.init();
+
+}
+
+//Get canvas 2D Context
+VanillaQR.prototype = {
+
+    //Canvas create
+    canvasWrite: function(qf, width) {
+
+        //Get context and proceed if it is allowed
+        if(!this.qrc) {
+
+            this.qrc = this.getContext(this.domElement);
+
+            //No canvas support default to Table
+            if(!this.qrc) {
+                this.toTable = true;
+                this.domElement = document.createElement("div");
+                this.tableWrite(qf, width);
+            }
+
+        }
+
+        //Setup canvas context
+        var size = this.size;
+        var qrc = this.qrc;
+
+        qrc.canvas.width = size;
+        qrc.canvas.height = size;
+        qrc.fillStyle = '#eee';
+        qrc.fillRect(0, 0, size, size);
 
         qrc.lineWidth=1;
 
-        var i,j;
-        px = wd;
-        if(ht < wd)
-            px = ht;
-        px /= width+10;
+        var px = size;
+        px /= width + 10;
         px=Math.round(px - 0.5);
 
         //Fill canvas with set colors
-        qrc.clearRect(0,0,wd,ht);
+        qrc.clearRect(0,0,size,size);
         qrc.fillStyle = this.colorLight;
-        qrc.fillRect(0,0,px*(width+8),px*(width+8));
+        qrc.fillRect(0, 0, px*(width+8), px*(width+8));
         qrc.fillStyle = this.colorDark;
 
-        for( i = 0; i < width; i++ ) {
+        //Write boxes per row
+        for( var i = 0; i < width; i++ ) {
 
-            for( j = 0; j < width; j++ ) {
+            for( var j = 0; j < width; j++ ) {
                 if( qf[j*width+i] ) {
                     qrc.fillRect(px*(4+i),px*(4+j),px,px);
                 }
@@ -700,42 +749,130 @@ function VanillaQR ( customize ) {
 
          }
 
+    },
+
+    //Table write qr code
+    tableWrite: function(qf, width) {
+
+        //Table style
+        var collapseStyle = "border:0;border-collapse:collapse;";
+        var tdWidth = Math.round((this.size / width) - 3.5) + "px";
+        var tdStyle = "width:" + tdWidth + ";height:" + tdWidth + ";";
+
+        var colorLight = this.colorLight;
+        var colorDark = this.colorDark;
+
+        //Table elements
+        var table = document.createElement("table");
+        table.style.cssText = collapseStyle;
+
+        var tr = document.createElement("tr");
+        var td = document.createElement("td");
+
+        //Cloning and creating table Elements
+        var cloneTD = function() { return td.cloneNode(); };
+
+        var createTDDark = function() {
+            var elem = cloneTD();
+            elem.style.cssText = tdStyle + "background:" + colorDark;
+            return elem;
+        };
+
+        var createTDLight = function() {
+            var elem = cloneTD();
+            elem.style.cssText = tdStyle + "background:" + colorLight;
+            return elem;
+        }
+
+        //Create first border
+        var lightBorder = function() {
+
+            var row = tr.cloneNode();
+
+            for( var t = 0; t < width + 2; t++) {
+                var lightTD = createTDLight();
+                row.appendChild(lightTD);
+            }
+
+            return row;
+        }
+
+        table.appendChild(lightBorder());
+
+        //Write boxes per row
+        for( var i = 0; i < width; i++ ) {
+
+            var currentRow = tr.cloneNode();
+            table.appendChild(currentRow);
+
+            for( var j = 0; j < width; j++ ) {
+
+                if(j === 0) {
+                    currentRow.appendChild(createTDLight());
+                }
+
+                //Is a dark color
+                if( qf[ (i*width) + j ] === 1 ) {
+                    var darkTd = createTDDark();
+                    currentRow.appendChild(darkTd);
+                }
+
+                //Light color
+                else {
+                    var lightTD = createTDLight();
+                    currentRow.appendChild(lightTD);
+                }
+
+                if(j === width - 1) {
+                    currentRow.appendChild(createTDLight());
+                }
+
+             }
+
+         }
+
+         table.appendChild(lightBorder());
+
+         this.domElement.appendChild(table);
+
+    },
+
+    //get domElement 2D  Context
+    getContext: function(domElement) {
+
+        //try to get 2d context error
+        if(!(domElement.getContext && domElement.getContext('2d'))) {
+
+            console.error("Browser does not have 2d Canvas support");
+            return;
+
+        }
+
+        return domElement.getContext('2d');
+
+    },
+
+    //QR frame to image type
+    toImage: function(type) {
+
+        if(!this.qrc) {return;}
+
+        //Check image output type
+        var dataType = this.imageTypes[type];
+        if(!dataType) {
+            throw new Error(type + " is not a valid image type ");
+        }
+
+        //create image with src of QR code
+    	var image = new Image;
+    	image.src = this.domElement.toDataURL(dataType);
+    	return image;
+
     }
 
-
-    //Auto initialize
-    SCOPE.init();
-
-}
-
-//Get canvas 2D Context
-VanillaQR.prototype.getContext = function(domElement, onError) {
-
-    //try to get 2d context error
-    if(!(domElement.getContext && domElement.getContext('2d'))) {
-
-        console.error("Browser does not have 2d Canvas support");
-        if(onError) {onError();}
-        return;
-
-    }
-
-    return domElement.getContext('2d');
 
 };
 
-VanillaQR.prototype.toImage = function(type) {
-
-    var dataType = this.imageTypes[type];
-    if(!dataType) {
-        throw new Error(type + " is not a valid image type ");
-    }
-
-	var image = new Image();
-	image.src = this.domElement.toDataURL(dataType);
-	return image;
-
-};
 
 // Private variables
 // alignment pattern
