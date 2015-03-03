@@ -6,7 +6,14 @@ body {
     margin: 0 auto;
 }
 
-textarea, button, canvas, p {
+canvas {
+    width: 15em;
+    height: 15em;
+    margin: 0 auto;
+    display: block;
+}
+
+textarea, button, p {
     display: block;
     width: 100%;
     margin: 20px auto;

@@ -713,6 +713,7 @@ VanillaQR.prototype = {
                 this.toTable = true;
                 this.domElement = document.createElement("div");
                 this.tableWrite(qf, width);
+                return;
             }
 
         }
@@ -843,8 +844,8 @@ VanillaQR.prototype = {
         //try to get 2d context error
         if(!(domElement.getContext && domElement.getContext('2d'))) {
 
-            console.error("Browser does not have 2d Canvas support");
-            return;
+            console.log("Browser does not have 2d Canvas support");
+            return false;
 
         }
 
