@@ -722,8 +722,7 @@ VanillaQR.prototype = {
         var size = this.size;
         var qrc = this.qrc;
 
-        qrc.canvas.width = size;
-        qrc.canvas.height = size;
+        qrc.canvas.width = qrc.canvas.height = size;
         qrc.fillStyle = '#eee';
         qrc.fillRect(0, 0, size, size);
 
@@ -834,6 +833,7 @@ VanillaQR.prototype = {
 
          table.appendChild(lightBorder());
 
+         this.domElement.innerHTML = "";
          this.domElement.appendChild(table);
 
     },
