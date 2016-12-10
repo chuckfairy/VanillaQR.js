@@ -14,7 +14,6 @@
         url: "https://github.com/chuckfairy/VanillQR.js",
         width: 400,
         height: 400,
-
         colorLight: "#FAA7F9",
         colorDark: "#3A005E",
 
@@ -26,9 +25,30 @@
         url: "https://github.com/chuckfairy/VanillQR.js",
         width: 400,
         height: 400,
-
         colorLight: "#FAA7F9",
-        colorDark: "#3A005E"
+        colorDark: "#3A005E",
+
+    });
+
+    var qr3 = new VanillaQR({
+        url: "https://github.com/chuckfairy/VanillQR.js",
+        width: 400,
+        height: 400,
+        noborder: true,
+        colorLight: "#FFFFFF",
+        colorDark: "#000000"
+
+    });
+
+    var qr4 = new VanillaQR({
+        url: "https://github.com/chuckfairy/VanillQR.js",
+        width: 400,
+        height: 400,
+        noborder: true,
+        colorLight: "#FFFFFF",
+        colorDark: "#000000",
+
+        toTable: true
 
     });
 
@@ -41,8 +61,14 @@
     document.body.appendChild(createTitle("Table"));
     document.body.appendChild(qr.domElement);
 
+    document.body.appendChild(createTitle("Table without border"));
+    document.body.appendChild(qr4.domElement);
+
     document.body.appendChild(createTitle("Canvas"));
     document.body.appendChild(qr2.domElement);
+
+        document.body.appendChild(createTitle("Canvas without border"));
+    document.body.appendChild(qr3.domElement);
 
     var imageElement = qr2.toImage("png");
     if(imageElement) {

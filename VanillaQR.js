@@ -46,6 +46,8 @@ function VanillaQR ( customize ) {
     //Correction level
     this.ecclevel = customize.ecclevel || 1;
 
+    this.noborder = customize.noborder;
+
     /********************PRIVATES********************/
 
 	// Set data values
@@ -722,18 +724,26 @@ VanillaQR.prototype = {
         var size = this.size;
         var qrc = this.qrc;
 
-        qrc.canvas.width = qrc.canvas.height = size;
-        qrc.fillStyle = '#eee';
-        qrc.fillRect(0, 0, size, size);
 
         qrc.lineWidth=1;
 
         var px = size;
         px /= width + 10;
         px=Math.round(px - 0.5);
+        var offset = 4;
+
+        if (this.noborder) {
+            qrc.canvas.width = qrc.canvas.height = px * width;
+            offset = 0;
+        }
+        else {
+            qrc.canvas.width = qrc.canvas.height = size;
+            qrc.fillStyle = '#eee';
+            qrc.fillRect(0, 0, size, size);
+        }
 
         //Fill canvas with set colors
-        qrc.clearRect(0,0,size,size);
+        qrc.clearRect(0,0,qrc.canvas.height,qrc.canvas.width);
         qrc.fillStyle = this.colorLight;
         qrc.fillRect(0, 0, px*(width+8), px*(width+8));
         qrc.fillStyle = this.colorDark;
@@ -743,7 +753,7 @@ VanillaQR.prototype = {
 
             for( var j = 0; j < width; j++ ) {
                 if( qf[j*width+i] ) {
-                    qrc.fillRect(px*(4+i),px*(4+j),px,px);
+                    qrc.fillRect(px*(offset+i),px*(offset+j),px,px);
                 }
              }
 
@@ -797,7 +807,9 @@ VanillaQR.prototype = {
             return row;
         }
 
-        table.appendChild(lightBorder());
+        if (!this.noborder) {
+            table.appendChild(lightBorder());
+        }
 
         //Write boxes per row
         for( var i = 0; i < width; i++ ) {
@@ -823,7 +835,8 @@ VanillaQR.prototype = {
                     currentRow.appendChild(lightTD);
                 }
 
-                if(j === width - 1) {
+
+                if(j === width - 1 && !this.noborder) {
                     currentRow.appendChild(createTDLight());
                 }
 
@@ -831,7 +844,9 @@ VanillaQR.prototype = {
 
          }
 
-         table.appendChild(lightBorder());
+        if (!this.noborder) {
+            table.appendChild(lightBorder());
+        }
 
          this.domElement.innerHTML = "";
          this.domElement.appendChild(table);
