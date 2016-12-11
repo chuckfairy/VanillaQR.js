@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    <meta charset="UTF-8">
     <title>VanillaQR</title>
     <script src="VanillaQR.js"></script>
 </head>
@@ -11,45 +12,54 @@
     <script>
 
     var qr = new VanillaQR({
-        url: "https://github.com/chuckfairy/VanillQR.js",
+        url: "http://example.com",
         width: 400,
         height: 400,
         colorLight: "#FAA7F9",
         colorDark: "#3A005E",
 
         toTable: true
+    });
 
+    var qrTableBroder = new VanillaQR({
+        url: "http://example.com",
+        width: 400,
+        height: 400,
+        colorLight: "#FAA7F9",
+        colorDark: "#3A005E",
+        toTable: true,
+
+        borderSize: 10
     });
 
     var qr2 = new VanillaQR({
-        url: "https://github.com/chuckfairy/VanillQR.js",
+        url: "http://example.com",
+        width: 400,
+        height: 400,
+        colorLight: "#FAA7F9",
+        colorDark: "#3A005E"
+    });
+
+    var qr3 = new VanillaQR({
+        url: "http://example.com",
         width: 400,
         height: 400,
         colorLight: "#FAA7F9",
         colorDark: "#3A005E",
 
-    });
-
-    var qr3 = new VanillaQR({
-        url: "https://github.com/chuckfairy/VanillQR.js",
-        width: 400,
-        height: 400,
-        noborder: true,
-        colorLight: "#FFFFFF",
-        colorDark: "#000000"
-
+        noBorder: true
     });
 
     var qr4 = new VanillaQR({
-        url: "https://github.com/chuckfairy/VanillQR.js",
+        url: "http://example.com",
         width: 400,
         height: 400,
-        noborder: true,
-        colorLight: "#FFFFFF",
-        colorDark: "#000000",
+        colorLight: "#FAA7F9",
+        colorDark: "#3A005E",
 
-        toTable: true
+        toTable: true,
 
+        noBorder: true
     });
 
     var createTitle = function(title) {
@@ -60,6 +70,9 @@
 
     document.body.appendChild(createTitle("Table"));
     document.body.appendChild(qr.domElement);
+
+    document.body.appendChild(createTitle("Table with big border"));
+    document.body.appendChild(qrTableBroder.domElement);
 
     document.body.appendChild(createTitle("Table without border"));
     document.body.appendChild(qr4.domElement);

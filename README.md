@@ -24,6 +24,12 @@ var qr = new VanillaQR({
     //Ecc correction level 1-4
     ecclevel: 1
 
+    //Use a border or not
+    noBorder: false,
+
+    //Border size to output at
+    borderSize: 4
+
 });
 
 //Canvas or table is stored in domElement property
@@ -73,3 +79,7 @@ Vanilla QR is based on a port of a java qr code library that I can no longer fin
 
 * Demo > http://chuckfairy.com/VanillaQR.js/example.html
 * Creator > http://chuckfairy.com/VanillaQR.js/creator/
+
+## Special Thanks
+
+- @alberto-salinas

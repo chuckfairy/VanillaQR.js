@@ -3,14 +3,16 @@
 //url, colorLight, colorDark, width, height
 function VanillaQR ( customize ) {
 
+    var scope = this;
+
     customize = typeof(customize) === "object" ? customize : {};
 
     /********************PUBLICS********************/
 
-    this.revision = 2;
+    scope.revision = 3;
 
     //canvas output types
-    this.imageTypes = {
+    scope.imageTypes = {
         "bmp"    : "image/bmp",
         "gif"    : "image/gif",
         "jpeg"   : "image/jpeg",
@@ -23,41 +25,44 @@ function VanillaQR ( customize ) {
     };
 
     //toTable use will default if no canvas support
-    this.toTable = customize.toTable;
+    scope.toTable = customize.toTable;
 
     //qr active domElement
-    this.domElement = (this.toTable) ?
+    scope.domElement = (scope.toTable) ?
         document.createElement("div"):
         document.createElement("canvas");
 
     //QR url
-    this.url = customize.url || "";
+    scope.url = customize.url || "";
 
     //Canvas and qr width and height
-    this.size  = (customize.size  || 280);
+    scope.size  = (customize.size  || 280);
 
     //QR context
-    this.qrc = false;
+    scope.qrc = false;
 
     //QR colors
-    this.colorLight = customize.colorLight || '#fff';
-    this.colorDark = customize.colorDark || "#000";
+    scope.colorLight = customize.colorLight || '#fff';
+    scope.colorDark = customize.colorDark || "#000";
 
     //Correction level
-    this.ecclevel = customize.ecclevel || 1;
+    scope.ecclevel = customize.ecclevel || 1;
 
-    this.noborder = customize.noborder;
+    //Border related
+    scope.noBorder = customize.noBorder;
+    scope.borderSize = customize.borderSize || 4;
+
 
     /********************PRIVATES********************/
 
 	// Set data values
 	// Working buffers:
-	var strinbuf = [ ];
-	var eccbuf   = [ ];
-	var qrframe  = [ ];
-	var framask  = [ ];
-	var rlens    = [ ];
-	var genpoly  = [ ];
+	var strinbuf = [];
+	var eccbuf   = [];
+	var qrframe  = [];
+	var framask  = [];
+	var rlens    = [];
+	var genpoly  = [];
 
 	// Control values - width is based on version, last 4 are from table.
 	var ecclevel;
@@ -340,7 +345,7 @@ function VanillaQR ( customize ) {
     };
 
     //Generate QR frame array
-    this.genframe = function(instring) {
+    scope.genframe = function(instring) {
 
         var eccblocks = VanillaQR.eccblocks;
         var gexp = VanillaQR.gexp;
@@ -677,25 +682,25 @@ function VanillaQR ( customize ) {
     };
 
     //Initialize QR Code
-    this.init = function() {
+    scope.init = function() {
 
-        ecclevel = this.ecclevel;
-        var qf = this.genframe(this.url);
+        ecclevel = scope.ecclevel;
+        var qf = scope.genframe(scope.url);
 
-        if(this.toTable) {
+        if(scope.toTable) {
 
-            this.tableWrite(qf, width);
+            scope.tableWrite(qf, width);
 
         } else {
 
-            this.canvasWrite(qf, width);
+            scope.canvasWrite(qf, width);
 
         }
 
     };
 
     //Auto initialize
-    this.init();
+    scope.init();
 
 }
 
@@ -705,48 +710,48 @@ VanillaQR.prototype = {
     //Canvas create
     canvasWrite: function(qf, width) {
 
-        //Get context and proceed if it is allowed
-        if(!this.qrc) {
+        var scope = this;
 
-            this.qrc = this.getContext(this.domElement);
+        //Get context and proceed if it is allowed
+        if(!scope.qrc) {
+
+            scope.qrc = scope.getContext(scope.domElement);
 
             //No canvas support default to Table
-            if(!this.qrc) {
-                this.toTable = true;
-                this.domElement = document.createElement("div");
-                this.tableWrite(qf, width);
+            if(!scope.qrc) {
+                scope.toTable = true;
+                scope.domElement = document.createElement("div");
+                scope.tableWrite(qf, width);
                 return;
             }
 
         }
 
         //Setup canvas context
-        var size = this.size;
-        var qrc = this.qrc;
-
+        var size = scope.size;
+        var qrc = scope.qrc;
 
         qrc.lineWidth=1;
 
         var px = size;
         px /= width + 10;
         px=Math.round(px - 0.5);
+
         var offset = 4;
 
-        if (this.noborder) {
+        if (scope.noBorder) {
             qrc.canvas.width = qrc.canvas.height = px * width;
             offset = 0;
         }
         else {
             qrc.canvas.width = qrc.canvas.height = size;
-            qrc.fillStyle = '#eee';
-            qrc.fillRect(0, 0, size, size);
         }
 
         //Fill canvas with set colors
-        qrc.clearRect(0,0,qrc.canvas.height,qrc.canvas.width);
-        qrc.fillStyle = this.colorLight;
+        qrc.clearRect( 0, 0, size, size );
+        qrc.fillStyle = scope.colorLight;
         qrc.fillRect(0, 0, px*(width+8), px*(width+8));
-        qrc.fillStyle = this.colorDark;
+        qrc.fillStyle = scope.colorDark;
 
         //Write boxes per row
         for( var i = 0; i < width; i++ ) {
@@ -764,13 +769,17 @@ VanillaQR.prototype = {
     //Table write qr code
     tableWrite: function(qf, width) {
 
+        var scope = this;
+
         //Table style
         var collapseStyle = "border:0;border-collapse:collapse;";
         var tdWidth = Math.round((this.size / width) - 3.5) + "px";
+        var borderWidth = width + ( ( scope.noBorder ) ? 0 : ( scope.borderSize * 2 ) );
+        var sideBorderWidth = scope.borderSize;
         var tdStyle = "width:" + tdWidth + ";height:" + tdWidth + ";";
 
-        var colorLight = this.colorLight;
-        var colorDark = this.colorDark;
+        var colorLight = scope.colorLight;
+        var colorDark = scope.colorDark;
 
         //Table elements
         var table = document.createElement("table");
@@ -794,22 +803,43 @@ VanillaQR.prototype = {
             return elem;
         }
 
-        //Create first border
-        var lightBorder = function() {
 
-            var row = tr.cloneNode();
+        //Regular borders appending
+        var appendBorders = function( table ) {
 
-            for( var t = 0; t < width + 2; t++) {
-                var lightTD = createTDLight();
-                row.appendChild(lightTD);
+            var insertNode = table.firstChild;
+
+            for( var i = 0; i < scope.borderSize; i ++ ) {
+
+                var row = tr.cloneNode();
+
+                for( var t = 0; t < borderWidth; t++ ) {
+                    var lightTD = createTDLight();
+                    row.appendChild(lightTD);
+                }
+
+                table.appendChild( row );
+                table.insertBefore( row.cloneNode( true ), insertNode );
+
             }
 
-            return row;
         }
 
-        if (!this.noborder) {
-            table.appendChild(lightBorder());
-        }
+
+        //Create side border
+        var appendSideBorders = function( row ) {
+
+            var insertNode = row.firstChild;
+
+            for( var i = 0; i < sideBorderWidth; i ++ ) {
+
+                row.insertBefore( createTDLight(), insertNode );
+
+                row.appendChild(createTDLight());
+
+            }
+
+        };
 
         //Write boxes per row
         for( var i = 0; i < width; i++ ) {
@@ -818,10 +848,6 @@ VanillaQR.prototype = {
             table.appendChild(currentRow);
 
             for( var j = 0; j < width; j++ ) {
-
-                if(j === 0) {
-                    currentRow.appendChild(createTDLight());
-                }
 
                 //Is a dark color
                 if( qf[ (i*width) + j ] === 1 ) {
@@ -835,21 +861,24 @@ VanillaQR.prototype = {
                     currentRow.appendChild(lightTD);
                 }
 
+            }
 
-                if(j === width - 1 && !this.noborder) {
-                    currentRow.appendChild(createTDLight());
-                }
+            if( !scope.noBorder ) {
 
-             }
+                appendSideBorders(currentRow);
 
-         }
+            }
 
-        if (!this.noborder) {
-            table.appendChild(lightBorder());
         }
 
-         this.domElement.innerHTML = "";
-         this.domElement.appendChild(table);
+        if( !scope.noBorder ) {
+
+            appendBorders( table );
+
+        }
+
+         scope.domElement.innerHTML = "";
+         scope.domElement.appendChild(table);
 
     },
 
@@ -885,7 +914,6 @@ VanillaQR.prototype = {
     	return image;
 
     }
-
 
 };
 
