@@ -1,3 +1,4 @@
+//https://github.com/chuckfairy/VanillaQR.js
 //VanillaQR Function constructor
 //pass an object with customizable options
 //url, colorLight, colorDark, width, height
