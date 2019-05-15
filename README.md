@@ -22,7 +22,7 @@ var qr = new VanillaQR({
     toTable: false,
 
     //Ecc correction level 1-4
-    ecclevel: 1
+    ecclevel: 1,
 
     //Use a border or not
     noBorder: false,
