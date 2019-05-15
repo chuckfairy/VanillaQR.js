@@ -16,7 +16,7 @@ var qr = new VanillaQR({
     size: 280,
 
     colorLight: "#ffffff",
-    colorDark: "#0000000",
+    colorDark: "#000000",
 
     //output to table or canvas
     toTable: false,
