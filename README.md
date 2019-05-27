@@ -16,13 +16,13 @@ var qr = new VanillaQR({
     size: 280,
 
     colorLight: "#ffffff",
-    colorDark: "#0000000",
+    colorDark: "#000000",
 
     //output to table or canvas
     toTable: false,
 
     //Ecc correction level 1-4
-    ecclevel: 1
+    ecclevel: 1,
 
     //Use a border or not
     noBorder: false,
