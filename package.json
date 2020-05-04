@@ -10,6 +10,7 @@
         "type": "git",
         "url": "git+https://github.com/chuckfairy/VanillaQR.js.git"
     },
+    "module": "VanillaQR.module.js",
     "keywords": [
         "vanilla",
         "clientside",
