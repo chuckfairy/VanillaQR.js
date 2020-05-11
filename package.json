@@ -1,0 +1,33 @@
+{
+    "name": "vanillaqr",
+    "version": "1.0.0",
+    "description": "Client Side QR Code Generator",
+    "browser": "VanillaQR.module.js",
+    "scripts": {
+        "build": "./bin/build.sh"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/chuckfairy/VanillaQR.js.git"
+    },
+    "module": "VanillaQR.module.js",
+    "keywords": [
+        "qr",
+        "vanilla",
+        "clientside",
+        "client",
+        "generator",
+        "creator",
+        "ecclevel"
+    ],
+    "author": "chuckfairy",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/chuckfairy/VanillaQR.js/issues"
+    },
+    "homepage": "https://github.com/chuckfairy/VanillaQR.js#readme",
+    "devDependencies": {
+        "minify": "^5.1.1"
+    },
+    "dependencies": {}
+}

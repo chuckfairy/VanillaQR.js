@@ -1,11 +1,11 @@
-# VanillaQR javascript QR code generator
+# VanillaQR clientside javascript QR code generator
 
-A small javascript file for creating qr codes on the fly using the HTML5 Canvas element. Only 33kb and 11kb compressed. By default VanillaQR.js will output a canvas element as it's domElement. If the canvas element and 2d context is not supported, it will create a table instead. Tables will not be able to output images so be sure to check that the image element exists.
+A small javascript file for creating qr codes on the fly using the HTML5 Canvas element. By default VanillaQR.js will output a canvas element as it's domElement. If the canvas element and 2d context is not supported, it will create a table instead. Tables will not be able to output images so be sure to check that the image element exists.
 
 ## How to use
 
 ```html
-<script src="VanillaQR.js"></script>
+<script src="VanillaQR.min.js"></script>
 <script>
 
 //Create qr object
@@ -54,6 +54,19 @@ qr.init();
 
 </script>
 ```
+
+Through module
+
+```js
+import VanillaQR from "VanillaQR"
+
+
+//See above for more
+var qr = new VanillaQR({
+    url: "https://github.com/chuckfairy/VanillQR.js",
+});
+```
+
 ## Browser support
 
 All browsers with canvas and canvas 2d context support
